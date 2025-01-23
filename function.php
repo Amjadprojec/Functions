@@ -106,25 +106,26 @@ class Display {
 	  print kp.'        @copyright Amjadyt||2024            '.d.n;
 	  self::line();
 	}
-	static function ipApi(){
+   static function ipApi(){
 		$r = json_decode(file_get_contents("http://ip-api.com/json"));
 		if($r->status == "success")return $r;
 	}
-	static function cetak($nama,$isi){
+   static function cetak($nama,$isi){
 	  print p.'__['.m.$nama.p.']─> '.m.$isi."\n";
-	}
-	static function Line($len = 44){
+   }
+   static function Line($len = 44){
 	  print c.str_repeat('─',$len).n;
-	}
-	static function Error($except){
+   }
+   static function Error($except){
 	  return m."__[".p."!".m."] ".p.$except;
-	}
-	static function Sukses($msg){
+   }
+   static function Sukses($msg){
 	  return h."__[".p."✓".h."] ".p.$msg.n;
-	}
-	static function Isi($msg){
+   }
+   static function Isi($msg){
 	  return p."__[".m."Input ".$msg.p."]".h;
-	}
+   }
+	
 }
 class Functions {
   static function setConfig($key){
