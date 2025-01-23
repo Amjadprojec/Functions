@@ -1,1 +1,1 @@
-<h2>Function PHP </h2>
+<h2 font color = "#2540f9ff">Function PHP </h2>
