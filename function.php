@@ -18,7 +18,8 @@ const o = "\033[38;5;214m"; // Warna mendekati orange
 const o2 = "\033[01;38;5;208m"; // Warna mendekati orange
 
 // Warna teks tambahan
-
+const r = "\033[38;5;196m";   // Merah terang
+const g = "\033[38;5;46m";    // Hijau terang
 const y = "\033[38;5;226m";   // Kuning terang
 const b1 = "\033[38;5;21m";   // Biru terang
 const p1 = "\033[38;5;13m";   // Ungu terang
