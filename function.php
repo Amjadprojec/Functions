@@ -113,10 +113,22 @@ class Display {
 	static function cetak($nama,$isi){
 	  print p.'__['.m.$nama.p.']─> '.m.$isi."\n";
 	}
+	static function Line($len = 44){
+	  print c.str_repeat('─',$len).n;
+	}
+	static function Error($except){
+	  return m."__[".p."!".m."] ".p.$except;
+	}
+	static function Sukses($msg){
+	  return h."__[".p."✓".h."] ".p.$msg.n;
+	}
+	static function Isi($msg){
+	  return p."__[".m."Input ".$msg.p."]".h;
+	}
 }
 class Functions {
   static function setConfig($key){
-    $configFile='config.json';
+    $configFile='data.json';
     $config=[];
     if(file_exists($configFile)){
       $config=json_decode(file_get_contents($configFile),true);
