@@ -111,7 +111,7 @@ class Display {
 		if($r->status == "success")return $r;
 	}
 	static function cetak($nama,$isi){
-	  print p.'__['.m.$nama.p.']─>'.m.$isi;
+	  print p.'__['.m.$nama.p.']─>'.m.$isi.n;
 	}
 }
 class Functions {
