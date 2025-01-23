@@ -18,8 +18,7 @@ const o = "\033[38;5;214m"; // Warna mendekati orange
 const o2 = "\033[01;38;5;208m"; // Warna mendekati orange
 
 // Warna teks tambahan
-const r = "\033[38;5;196m";   // Merah terang
-const g = "\033[38;5;46m";    // Hijau terang
+
 const y = "\033[38;5;226m";   // Kuning terang
 const b1 = "\033[38;5;21m";   // Biru terang
 const p1 = "\033[38;5;13m";   // Ungu terang
@@ -50,7 +49,8 @@ const bg_p1 = "\033[48;5;13m";   // Latar belakang ungu terang
 const bg_c1 = "\033[48;5;51m";   // Latar belakang cyan terang
 const bg_gr = "\033[48;5;240m";  // Latar belakang abu-abu gelap
 
-const p = "\033[1;97m",m = "\033[1;31m",h = "\033[1;32m",k = "\033[1;33m",c = "\033[1;36m",b = "\033[1;34m",mp = "\033[101m\033[1;37m",n = "\n",d = "\033[0m",t = "\t",r = " \r",bp="\033[104m\033[1;37m";
+const p = "\033[1;97m",m = "\033[1;31m",h = "\033[1;32m",k = "\033[1;33m",c = "\033[1;36m",b = "\033[1;34m",mp = "\033[101m\033[1;37m",n = "\n",d = "\033[0m",t = "\t",bp="\033[104m\033[1;37m";
+
 
 class Requests {
 	static function Curl($url, $header=0, $post=0, $data_post=0, $cookie=0, $proxy=0, $skip=0){
@@ -93,4 +93,70 @@ class Requests {
 	    }
 	  }
 	}
+}
+
+class Display {
+  static function Isi($msg){
+	  return h.'--['.k.'Input '.$msg.h.']➤ '.k;
+	}
+	static function ipApi(){
+	  $r = json_decode(file_get_contents("http://ip-api.com/json"));
+	  if($r->status == "success")return $r;
+	}
+	static function cetak($nama,$isi){
+	  print p.'__['.m.$nama.p.']─> '.m.$isi."\n";
+	}
+	static function Line($len = 44){
+	  print c.str_repeat('─',$len).n;
+	}
+	static function Error($except){
+	  return m."__[".p."!".m."] ".p.$except;
+	}
+	static function Sukses($msg){
+	  return h."__[".p."✓".h."] ".p.$msg.n;
+  }
+  static function gagal($msg){
+    return h."__[".p."×".h."] ".p.$msg.n;
+  }
+  static function ban(){
+    system('clear');
+	  $Api = self::ipApi();
+	  echo bp.'     '.$Api->country.' '.$Api->city.' '.$Api->query.'     '.d.n;
+	  print r.'┏━┓┏┳┓━┓┏━┓┳━┓ '.k.'┳ ┳┏┳┓   '.r.'➤ '.p.'Script : '.y.name.n.r.'┣━┫┃ ┃ ┃┣━┫┃ ┃ '.k.'┗┳┛ ┃    '.r.'➤ '.p.'Version: '.g.version.n.r.'┻ ┻┻ ┻┗┛┻ ┻┻━┛ '.k.' ┻  ┻    '.r.'➤ '.p.'Status : '.g.'Online'.n;
+	  print kp.'        ©copyright Amjadyt||2024            '.d.n;
+	  self::line();
+	}
+}
+
+class Functions {
+  static function setConfig($key){
+    $configFile='data.json';
+    $config=[];
+    if(file_exists($configFile)){
+      $config=json_decode(file_get_contents($configFile),true);
+    }if(isset($config[$key])){
+      return $config[$key];
+    }else{
+      Display::ban();
+      $data = readline(Display::isi($key));
+      $config[$key]=$data;
+      file_put_contents($configFile,json_encode($config,JSON_PRETTY_PRINT));
+      return $data;
+    }
+  }
+  static function Tmr($tmr){
+    date_default_timezone_set("UTC");
+    $sym = [' ─ ',' / ',' │ ',' \ ',];
+    $timr = time()+$tmr;
+    $a = 0;
+    while(true){
+      $a +=1;
+      $res=$timr-time();
+      if($res < 1) {
+        break;
+      }print $sym[$a % 4].p.date('H',$res).":".p.date('i',$res).":".p.date('s',$res)."\r";
+      usleep(100000);
+    }
+    print "\r           \r";
+  }
 }
