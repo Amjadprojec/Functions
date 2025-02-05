@@ -47,7 +47,7 @@ const bg_p1 = "\033[48;5;13m";   // Latar belakang ungu terang
 const bg_c1 = "\033[48;5;51m";   // Latar belakang cyan terang
 const bg_gr = "\033[48;5;240m";  // Latar belakang abu-abu gelap
 
-class Requests {
+
 class Requests {
   static function Curl($u, $h = 0, $p = 0,$mode = 0){
     while(true){
