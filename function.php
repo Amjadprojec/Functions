@@ -1,9 +1,6 @@
 <?php
-//#### code By amjadyt #####
-//##### 23-01-2025 #########
-//##### Version 1.0.2 #########
+const class_version = "1.0.1";
 
-const class_version = "1.0.2";
 // Warna teks
 const n = "\n";          // Baris baru
 const d = "\033[0m";     // Reset
@@ -50,114 +47,164 @@ const bg_p1 = "\033[48;5;13m";   // Latar belakang ungu terang
 const bg_c1 = "\033[48;5;51m";   // Latar belakang cyan terang
 const bg_gr = "\033[48;5;240m";  // Latar belakang abu-abu gelap
 
-const p = "\033[1;97m",m = "\033[1;31m",h = "\033[1;32m",k = "\033[1;33m",c = "\033[1;36m",b = "\033[1;34m",mp = "\033[101m\033[1;37m",n = "\n",d = "\033[0m",t = "\t",bp="\033[104m\033[1;37m";
-
-
 class Requests {
-	static function Curl($url, $header=0, $post=0, $data_post=0, $cookie=0, $proxy=0, $skip=0){
-	  while(true){
-	    $ch = curl_init();
-	    curl_setopt($ch, CURLOPT_URL, $url);
-	    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-	    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-	    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-	    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-	    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
-	    curl_setopt($ch, CURLOPT_COOKIE,TRUE);if($cookie){
-	      curl_setopt($ch, CURLOPT_COOKIEFILE,$cookie);
-	      curl_setopt($ch, CURLOPT_COOKIEJAR,$cookie);
-	    }
-	    if($post) {
-	      curl_setopt($ch, CURLOPT_POST, true);
-	    }if($data_post) {
-	      curl_setopt($ch, CURLOPT_POSTFIELDS, $data_post);
-	    }if($header) {
-	      curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-	    }if($proxy){
-	      curl_setopt($ch, CURLOPT_HTTPPROXYTUNNEL, true);
-	      curl_setopt($ch, CURLOPT_PROXY, $proxy);
-	    }curl_setopt($ch, CURLOPT_HEADER, true);
-	    $r = curl_exec($ch);
-	    if($skip){
-	      return;
-	    }$c = curl_getinfo($ch);
-	    if(!$c) return "Curl Error : ".curl_error($ch); else{
-	      $head = substr($r, 0, curl_getinfo($ch, CURLINFO_HEADER_SIZE));
-	      $body = substr($r, curl_getinfo($ch, CURLINFO_HEADER_SIZE));
-	      curl_close($ch);
-	      if(!$body){
-	        print "Check your Connection!";
-	        sleep(2);print "\r                         \r";
-	        continue;
-	      }
-	      return array($head,$body);
-	    }
-	  }
-	}
-}
-
-class Display {
-  static function Isi($msg){
-	  return h.'--['.k.'Input '.$msg.h.']➤ '.k;
-	}
-	static function ipApi(){
-	  $r = json_decode(file_get_contents("http://ip-api.com/json"));
-	  if($r->status == "success")return $r;
-	}
-	static function cetak($nama,$isi){
-	  print p.'__['.m.$nama.p.']─> '.m.$isi."\n";
-	}
-	static function Line($len = 44){
-	  print c.str_repeat('─',$len).n;
-	}
-	static function Error($except){
-	  return m."__[".p."!".m."] ".p.$except;
-	}
-	static function Sukses($msg){
-	  return h."__[".p."✓".h."] ".p.$msg.n;
+  static function Curl($url, $header=0, $post=0, $data_post=0, $cookie=0, $proxy=0, $skip=0){
+    while(true){
+      $ch = curl_init();
+      curl_setopt($ch, CURLOPT_URL, $url);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+      curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+      curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+      curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+      curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 30);
+      curl_setopt($ch, CURLOPT_COOKIE,TRUE);
+      if($cookie){
+        curl_setopt($ch, CURLOPT_COOKIEFILE,$cookie);
+        curl_setopt($ch, CURLOPT_COOKIEJAR,$cookie);
+      }
+      if($post) {
+        curl_setopt($ch, CURLOPT_POST, true);
+      }if($data_post) {
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data_post);
+      }if($header) {
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+      }if($proxy){
+        curl_setopt($ch, CURLOPT_HTTPPROXYTUNNEL, true);
+        curl_setopt($ch, CURLOPT_PROXY, $proxy);
+      }
+      curl_setopt($ch, CURLOPT_HEADER, true);
+      $r = curl_exec($ch);
+      if($skip){
+        return;
+      }
+      $c = curl_getinfo($ch);
+      if(!$c) return "Curl Error : ".curl_error($ch); 
+      else{
+        $head = substr($r, 0, curl_getinfo($ch, CURLINFO_HEADER_SIZE));
+        $body = substr($r, curl_getinfo($ch, CURLINFO_HEADER_SIZE));
+        curl_close($ch);
+        if(!$body){print "Check your Connection!";
+        sleep(2);
+        print "\r                         \r";
+        continue;
+        }
+        return array($head,$body);
+      }
+    }
   }
-  static function gagal($msg){
-    return h."__[".p."×".h."] ".p.$msg.n;
+  static function get($url, $head =0){
+    return self::curl($url,$head);
+  }
+  static function post($url, $head=0, $data_post=0){return self::curl($url,$head, 1, $data_post);}
+}
+class Display {
+  static function Clear(){
+    if( PHP_OS_FAMILY == "Linux" ){
+      system('clear');
+    }else{
+      pclose(popen('cls','w'));
+    }
+  } 
+  static function menu($no,$conten){
+    print(p.'['.m.$no.p.'] '.p. $conten.n);
+  }
+  static function Line($len = 44){
+    print c.str_repeat('─',$len).n;
   }
   static function ban(){
-    system('clear');
+    self::clear();
 	  $Api = self::ipApi();
 	  echo bp.'     '.$Api->country.' '.$Api->city.' '.$Api->query.'     '.d.n;
 	  print r.'┏━┓┏┳┓━┓┏━┓┳━┓ '.k.'┳ ┳┏┳┓   '.r.'➤ '.p.'Script : '.y.name.n.r.'┣━┫┃ ┃ ┃┣━┫┃ ┃ '.k.'┗┳┛ ┃    '.r.'➤ '.p.'Version: '.g.version.n.r.'┻ ┻┻ ┻┗┛┻ ┻┻━┛ '.k.' ┻  ┻    '.r.'➤ '.p.'Status : '.g.'Online'.n;
 	  print kp.'        ©copyright Amjadyt||2024            '.d.n;
 	  self::line();
 	}
+	static function ipApi(){
+	  $r = json_decode(file_get_contents("http://ip-api.com/json"));
+	  if($r->status == "success")return $r;
+	}
+	static function Error($content){
+	  print(m.'['.p.'!'.m.'] '.$content.n);
+	}
+	static function sukses($content){
+	  print(p.'['.h.'√'.p.'] '.$content.n);
+	}
+	static function input($nama){
+	  return(p.'['.m.'+'.p.'] Input '.$nama.': ');
+	}
+	static function Cetak ($nama,$msg){
+	  print(p.'['.m.$nama.p.'] '.m.'──> '.p.$msg.n);
+	}
 }
-
 class Functions {
-  static function setConfig($key){
-    $configFile='data.json';
-    $config=[];
-    if(file_exists($configFile)){
-      $config=json_decode(file_get_contents($configFile),true);
-    }if(isset($config[$key])){
-      return $config[$key];
-    }else{
-      Display::ban();
-      $data = readline(Display::isi($key));
-      $config[$key]=$data;
-      file_put_contents($configFile,json_encode($config,JSON_PRETTY_PRINT));
-      return $data;
-    }
-  }
-  static function Tmr($tmr){
-    date_default_timezone_set("UTC");
-    $sym = [' ─ ',' / ',' │ ',' \ ',];
-    $timr = time()+$tmr;
-    $a = 0;
-    while(true){
-      $a +=1;
-      $res=$timr-time();
-      if($res < 1) {
-        break;
-      }print $sym[$a % 4].p.date('H',$res).":".p.date('i',$res).":".p.date('s',$res)."\r";
-      usleep(100000);
-    }
-    print "\r           \r";
-  }
+  static $configFile = "data.json";
+  static function Tmr($tmr){date_default_timezone_set("UTC");$sym = [' ─ ',' / ',' │ ',' \ ',];$timr = time()+$tmr;$a = 0;while(true){$a +=1;$res=$timr-time();if($res < 1) {break;}print $sym[$a % 4].p.date('H',$res).":".p.date('i',$res).":".p.date('s',$res)."\r";usleep(100000);}print "\r           \r";}
+  static function setConfig($key){if(!file_exists(self::$configFile)){$config = [];}else{$config = json_decode(file_get_contents(self::$configFile),1);}if(isset($config[$key])){return $config[$key];}else{print Display::input($key);$data = readline();print n;$config[$key] = $data;file_put_contents(self::$configFile,json_encode($config,JSON_PRETTY_PRINT));return $data;}}
+	static function removeConfig($key){$config = json_decode(file_get_contents(self::$configFile),1);unset($config[$key]);file_put_contents(self::$configFile,json_encode($config,JSON_PRETTY_PRINT));}
+	static function getConfig($key){if(!file_exists(self::$configFile)){$config = [];}else{$config = json_decode(file_get_contents(self::$configFile),1);}return $config[$key];}
+	static function view($youtube){$tanggal = date("dmy");$config = json_decode(file_get_contents(self::$configFile),1);$view = $config['view'];if($tanggal == $view){return 0;}else{$config['view'] = $tanggal;if( PHP_OS_FAMILY == "Linux" ){system("termux-open-url ".$youtube);}else{system("start ".$youtube);}file_put_contents(self::$configFile,json_encode($config,JSON_PRETTY_PRINT));}}
+	static function msg($str, $j = 10){
+	  $simbol = ['-', '/', '|', '\\'];
+	  for($i = $j; $i > 0; $i--){
+	    foreach($simbol as $n => $s){
+	      print p."  [".k.$s.p."] ".h.$str." ".k.str_repeat("➤", $n)."\r";
+	      usleep(100000);
+	    }
+	  }
+	  print "                           "."\r";
+	}
+}
+class HtmlScrap {
+	function __construct(){
+		$this->captcha = '/class=["\']([^"\']+)["\'][^>]*data-sitekey=["\']([^"\']+)["\'][^>]*>/i';
+		$this->input = '/<input[^>]*name=["\'](.*?)["\'][^>]*value=["\'](.*?)["\'][^>]*>/i';
+		$this->limit = '/(\d{1,})\/(\d{1,})/';
+	}
+	private function scrap($pattern, $html){preg_match_all($pattern, $html, $matches);return $matches;}
+	private function getCaptcha($html){$scrap = $this->scrap($this->captcha, $html);for($i = 0; $i < count($scrap[1]); $i++){$data[$scrap[1][$i]] = $scrap[2][$i];}return $data;}
+	private function getInput($html, $form = 1){$form = explode('<form', $html)[$form];$scrap = $this->scrap($this->input, $form);for($i = 0; $i < count($scrap[1]); $i++){$data[$scrap[1][$i]] = $scrap[2][$i];}return $data;}
+	public function Result($html, $form = 1)
+	{
+		$data['title'] = explode('</title>',explode('<title>', $html)[1])[0];
+		$data['cloudflare']=(preg_match('/Just a moment.../',$html))? true:false;
+		$data['firewall'] =(preg_match('/Firewall/',$html))? true:false;
+		$data['locked'] = (preg_match('/Locked/',$html))? true:false;
+		$data["captcha"] = $this->getCaptcha($html);
+		
+		$input = $this->getInput($html, $form);
+		$data["input"] = ($input)? $input:$this->getInput($html, 2);
+		$data["faucet"] = $this->scrap($this->limit, $html);
+		
+		$sukses = explode("icon: 'success',",$html)[1];
+		if($sukses){
+			$data["response"]["success"] = strip_tags(explode("'",explode("html: '",$sukses)[1])[0]);
+		}else{
+			$warning = explode("'",explode("html: '",$html)[1])[0];
+			$ban = explode('</div>',explode('<div class="alert text-center alert-danger"><i class="fas fa-exclamation-circle"></i> Your account',$html)[1])[0];
+			$invalid = (preg_match('/invalid amount/',$html))? "You are sending an invalid amount":false;
+			$shortlink = (preg_match('/Shortlink in order to claim from the faucet!/',$html))? $warning:false;
+			$sufficient = (preg_match('/sufficient funds/',$html))? "Sufficient funds":false;
+			$daily = (preg_match('/Daily claim limit/',$html))? "Daily claim limit":false;
+			$data["response"]["unset"] = false;
+			$data["response"]["exit"] = false;
+			if($ban){
+				$data["response"]["warning"] = $ban;
+				$data["response"]["exit"] = true;
+			}elseif($invalid){
+				$data["response"]["warning"] = $invalid;
+				$data["response"]["unset"] = true;
+			}elseif($shortlink){
+				$data["response"]["warning"] = $shortlink;
+				$data["response"]["exit"] = true;
+			}elseif($sufficient){
+				$data["response"]["warning"] = $sufficient;
+				$data["response"]["unset"] = true;
+			}elseif($warning){
+				$data["response"]["warning"] = $warning;
+			}else{
+				$data["response"]["warning"] = "Not Found";
+			}
+		}
+		return $data;
+	}
 }
